@@ -6,10 +6,10 @@ from zipfile import ZipFile
 from io import BytesIO
 
 def main():
-    st.title("Organizador de Arquivos por Cidade")
+    st.title("Criar Pastas - Prefeituras")
 
     # Componente de upload de arquivos
-    uploaded_files = st.file_uploader("Selecione os arquivos que deseja organizar por cidade:", accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Insira os arquivos das prefeituras que deseja organizar por pastas:", accept_multiple_files=True)
 
     if uploaded_files:
         # Criando um diretório temporário para armazenar os arquivos
