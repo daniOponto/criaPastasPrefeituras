@@ -8,7 +8,7 @@ from io import BytesIO
 # Função para verificar a senha
 def check_password(password):
     # Defina sua senha aqui
-    correct_password = "netinhodepaula"
+    correct_password = "senha123"
     return password == correct_password
 
 def main():
@@ -28,6 +28,11 @@ def main():
         }
         .sidebar .sidebar-content {
             background: #f0f0f0;
+        }
+        .btn-container {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
         }
         </style>
         """,
@@ -53,12 +58,6 @@ def main():
                 st.success("Senha verificada. Você pode prosseguir com as funcionalidades.")
             else:
                 st.error("Senha incorreta. Tente novamente.")
-
-    # Botão para limpar diretórios
-    if st.button("Limpar Diretórios"):
-        shutil.rmtree("./temp_upload", ignore_errors=True)
-        shutil.rmtree("./arquivos_organizados", ignore_errors=True)
-        st.success("Diretórios limpos com sucesso.")
 
     # Se a senha foi verificada corretamente, permite o uso das funcionalidades
     if st.session_state.password_verified:
@@ -148,6 +147,14 @@ def main():
             b64 = base64.b64encode(zipf.read()).decode()
             href = f'<a href="data:application/zip;base64,{b64}" download="arquivos_organizados.zip"><button style="background-color:#008CBA;border:none;color:white;padding:15px 32px;text-align:center;display:inline-block;font-size:16px;margin-bottom:0;cursor:pointer;border-radius:4px;">Baixar Arquivos Organizados</button></a>'
             st.markdown(href, unsafe_allow_html=True)
+
+        # Botão para limpar diretórios (visível apenas após a senha ser verificada)
+        if st.session_state.password_verified:
+            st.markdown('<div class="btn-container"><button class="clean-btn">Limpar Diretórios</button></div>', unsafe_allow_html=True)
+            if st.button("Limpar Diretórios", key="limpar_diretorios"):
+                shutil.rmtree("./temp_upload", ignore_errors=True)
+                shutil.rmtree("./arquivos_organizados", ignore_errors=True)
+                st.success("Diretórios limpos com sucesso.")
 
 if __name__ == "__main__":
     main()
