@@ -81,8 +81,10 @@ def main():
 
         st.success("Arquivos organizados com sucesso.")
 
-        # Opção para fazer download dos arquivos organizados
-        if st.button("Baixar Arquivos Organizados"):
+        # Botão para fazer download dos arquivos organizados
+        download_button = st.button("Baixar Arquivos Organizados")
+
+        if download_button:
             zipf = BytesIO()
             with ZipFile(zipf, 'w') as zip_obj:
                 for cidade, pasta in cidades_destinos.items():
