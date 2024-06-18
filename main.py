@@ -42,7 +42,8 @@ def process_documents(temp_dir):
             os.makedirs(diretorio_destino_cidade, exist_ok=True)
             caminho_origem = os.path.join(temp_dir, arquivo)
             caminho_destino = os.path.join(diretorio_destino_cidade, arquivo)
-            shutil.move(caminho_origem, caminho_destino)
+            if caminho_origem != caminho_destino:  # Ensure source and destination are different
+                shutil.move(caminho_origem, caminho_destino)
 
 # Function to create a zip file of processed folders
 def create_zip_of_folders():
