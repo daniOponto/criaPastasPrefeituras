@@ -6,7 +6,7 @@ from zipfile import ZipFile
 from io import BytesIO
 
 def main():
-    st.title("batata")
+    st.title("Organizador de Arquivos por Cidade")
 
     # Componente de upload de arquivos
     uploaded_files = st.file_uploader("Selecione os arquivos que deseja organizar por cidade:", accept_multiple_files=True)
@@ -28,7 +28,43 @@ def main():
         cidades_destinos = {
             'adamantina': 'Prefeitura Adamantina',
             'alfredo marcondes': 'Prefeitura Alfredo Marcondes',
-            # Lista completa de cidades aqui ...
+            'arco-iris': 'Prefeitura Arco-Iris',
+            'ariranha': 'Prefeitura Ariranha',
+            'bastos': 'Prefeitura Bastos',
+            'bilac': 'Prefeitura Bilac',
+            'bora': 'Prefeitura Bora',
+            'dracena': 'Prefeitura Dracena',
+            'flora rica': 'Prefeitura Flora Rica',
+            'florida paulista': 'Prefeitura Florida Paulista',
+            'getulina': 'Prefeitura Getulina',
+            'guaracai': 'Prefeitura Guaracai',
+            'guararapes': 'Prefeitura Guararapes',
+            'herculandia': 'Prefeitura Herculandia',
+            'iacri': 'Prefeitura Iacri',
+            'inubia paulista': 'Prefeitura Inubia Paulista',
+            'junqueiropolis': 'Prefeitura Junqueiropolis',
+            'lucelia': 'Prefeitura Lucelia',
+            'luiziania': 'Prefeitura Luiziania',
+            'mariapolis': 'Prefeitura Mariapolis',
+            'mirandopolis': 'Prefeitura Mirandopolis',
+            'osvaldo cruz': 'Prefeitura Osvaldo Cruz',
+            'ouro verde': 'Prefeitura Ouro Verde',
+            'pacaembu': 'Prefeitura Pacaembu',
+            'palmares paulista': 'Prefeitura Palmares Paulista',
+            'panorama': 'Prefeitura Panorama',
+            'parapua': 'Prefeitura Parapua',
+            'pauliceia': 'Prefeitura Pauliceia',
+            'pereira barreto': 'Prefeitura Pereira Barreto',
+            'piacatu': 'Prefeitura Piacatu',
+            'pirangi': 'Prefeitura Pirangi',
+            'presidente prudente': 'Prefeitura Presidente Prudente',
+            'quintana': 'Prefeitura Quintana',
+            'rinopolis': 'Prefeitura Rinopolis',
+            'rubiacea': 'Prefeitura Rubiacea',
+            'santa mercedes': 'Prefeitura Santa Mercedes',
+            'santopolis do aguapei': 'Prefeitura Santopolis Do Aguapei',
+            'tupa': 'Prefeitura Tupa',
+            'tupi paulista': 'Prefeitura Tupi Paulista',
             'valparaiso': 'Prefeitura Valparaiso'
         }
 
