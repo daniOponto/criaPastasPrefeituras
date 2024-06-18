@@ -1,59 +1,66 @@
-import streamlit as st
 import os
 import shutil
-import tempfile
-import zipfile
+import streamlit as st
 
-# Função para mover arquivos baseado na cidade
-def move_arquivos_por_cidade(arquivos_carregados, cidades_destinos):
-    temp_dir = tempfile.TemporaryDirectory()
+# Function to process uploaded files
+def process_files(uploaded_files):
+    # Temporary directory for storing uploaded files
+    temp_dir = './temp_upload'
+    os.makedirs(temp_dir, exist_ok=True)
 
-    for arquivo in arquivos_carregados:
-        nome_arquivo = arquivo.name
-        cidade_encontrada = next((cidade for cidade in cidades_destinos if cidade in nome_arquivo.lower()), None)
+    # Save uploaded files to temp directory
+    for uploaded_file in uploaded_files:
+        with open(os.path.join(temp_dir, uploaded_file.name), 'wb') as f:
+            f.write(uploaded_file.getbuffer())
 
+    # Process uploaded files
+    process_documents(temp_dir)
+
+    # Create zip file of processed folders
+    zip_filename = create_zip_of_folders()
+
+    # Provide download link for zip file
+    st.markdown(f"### Download Processed Files")
+    st.markdown(get_binary_file_downloader_html(zip_filename, 'ProcessedFiles.zip', 'Click here to download'))
+
+    # Cleanup temp directory
+    shutil.rmtree(temp_dir)
+
+# Function to process documents based on city
+def process_documents(temp_dir):
+    cidades_destinos = {  # Your dictionary of cities and folder names
+        'adamantina': 'Prefeitura Adamantina',
+        'alfredo marcondes': 'Prefeitura Alfredo Marcondes',
+        'arco-iris': 'Prefeitura Arco-Iris',
+        'ariranha': 'Prefeitura Ariranha'
+    }
+
+    arquivos = os.listdir(temp_dir)
+    for arquivo in arquivos:
+        cidade_encontrada = next((cidade for cidade in cidades_destinos if cidade in arquivo.lower()), None)
         if cidade_encontrada:
-            diretorio_destino_cidade = os.path.join(temp_dir.name, cidades_destinos[cidade_encontrada])
+            diretorio_destino_cidade = os.path.join(temp_dir, cidades_destinos[cidade_encontrada])
             os.makedirs(diretorio_destino_cidade, exist_ok=True)
-            caminho_destino = os.path.join(diretorio_destino_cidade, nome_arquivo)
-            with open(caminho_destino, "wb") as f:
-                f.write(arquivo.getbuffer())
+            caminho_origem = os.path.join(temp_dir, arquivo)
+            caminho_destino = os.path.join(diretorio_destino_cidade, arquivo)
+            shutil.move(caminho_origem, caminho_destino)
 
-            st.write(f"Arquivo '{nome_arquivo}' movido para '{cidades_destinos[cidade_encontrada]}'.")
+# Function to create a zip file of processed folders
+def create_zip_of_folders():
+    processed_zip = 'ProcessedFiles.zip'
+    shutil.make_archive(processed_zip.replace('.zip', ''), 'zip', './temp_upload')
+    return processed_zip
 
-    return temp_dir
+# Function to download files
+def get_binary_file_downloader_html(bin_file, file_label, button_label):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    b64 = base64.b64encode(data).decode()
+    return f'<a href="data:application/octet-stream;base64,{b64}" download="{file_label}">{button_label}</a>'
 
-# Função para criar um arquivo ZIP temporário
-def criar_arquivo_zip(temp_dir):
-    zip_filename = 'arquivos_por_cidade.zip'
-    with zipfile.ZipFile(zip_filename, 'w') as zipf:
-        for root, _, files in os.walk(temp_dir.name):
-            for file in files:
-                zipf.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), temp_dir.name))
+# Streamlit UI
+st.title('Document Upload and Processing')
 
-    return zip_filename
-
-# Interface do Streamlit
-st.title("File Mover by City")
-
-# Lista de cidades e nomes das pastas
-cidades_destinos = {
-    'adamantina': 'Prefeitura Adamantina',
-    'alfredo marcondes': 'Prefeitura Alfredo Marcondes',
-    # Lista completa de cidades
-}
-
-# Upload dos arquivos
-uploaded_files = st.file_uploader("Escolha os arquivos", type=["txt", "csv", "xlsx", "pdf"], accept_multiple_files=True)
-
-# Verifica se arquivos foram carregados
-if uploaded_files:
-    # Executa a função para mover os arquivos por cidade
-    temp_dir = move_arquivos_por_cidade(uploaded_files, cidades_destinos)
-
-    # Cria um arquivo ZIP temporário
-    zip_filename = criar_arquivo_zip(temp_dir)
-
-    # Download do arquivo ZIP
-    st.markdown(f"### Download dos arquivos por cidade")
-    st.markdown(f"Download [**{zip_filename}**](./{zip_filename}) pronto!")
+uploaded_files = st.file_uploader('Upload your documents', accept_multiple_files=True)
+if st.button('Process Files') and uploaded_files:
+    process_files(uploaded_files)
