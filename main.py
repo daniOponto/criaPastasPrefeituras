@@ -39,10 +39,14 @@ def main():
 
     # Cache para armazenar a senha
     cached_password = st.cache(check_password, allow_output_mutation=True)
-    password = st.text_input("Digite a senha:", type="password")
-
-    # Verifica a senha apenas uma vez e armazena no cache
+    
+    # Verifica se a senha já foi validada
     if "password_verified" not in st.session_state:
+        st.session_state.password_verified = False
+
+    # Se a senha ainda não foi verificada, solicita que o usuário a insira
+    if not st.session_state.password_verified:
+        password = st.text_input("Digite a senha:", type="password")
         if st.button("Enviar"):
             if cached_password(password):
                 st.session_state.password_verified = True
@@ -51,7 +55,7 @@ def main():
                 st.error("Senha incorreta. Tente novamente.")
 
     # Se a senha foi verificada corretamente, permite o uso das funcionalidades
-    if st.session_state.get("password_verified", False):
+    if st.session_state.password_verified:
         # Componente de upload de arquivos
         uploaded_files = st.file_uploader("Insira os arquivos de prefeituras que deseja organizar em pastas:", accept_multiple_files=True)
 
