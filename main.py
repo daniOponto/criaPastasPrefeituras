@@ -8,7 +8,7 @@ from io import BytesIO
 # Função para verificar a senha
 def check_password(password):
     # Defina sua senha aqui
-    correct_password = "senha123"
+    correct_password = "netinhodepaula"
     return password == correct_password
 
 def main():
