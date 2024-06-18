@@ -1,6 +1,7 @@
 import os
 import shutil
 import streamlit as st
+import base64
 from zipfile import ZipFile
 from io import BytesIO
 
@@ -61,8 +62,9 @@ def main():
         shutil.rmtree(temp_dir, ignore_errors=True)
 
 def get_download_link(file):
-    # Cria um link para download do arquivo zipado
-    href = f'<a href="data:application/zip;base64,{file.read().encode("base64").decode()}">Clique aqui para baixar os arquivos organizados</a>'
+    # Converte o arquivo para base64 e cria um link para download do arquivo zipado
+    b64 = base64.b64encode(file.read()).decode()
+    href = f'<a href="data:application/zip;base64,{b64}" download="arquivos_organizados.zip">Clique aqui para baixar os arquivos organizados</a>'
     return href
 
 if __name__ == "__main__":
