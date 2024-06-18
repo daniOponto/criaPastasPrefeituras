@@ -2,10 +2,10 @@ import os
 import shutil
 
 # Diretório onde os arquivos estão
-diretorio_origem = ('C:/Users/Microsoft/Pasta1')
+diretorio_origem = ('C:/Users/Microsoft/Downloads/Pasta1')
 
 # Diretório para onde os arquivos vão
-diretorio_base_destino = ('C:/Users/Microsoft/Pasta1')
+diretorio_base_destino = ('C:/Users/Microsoft/Downloads/Pasta1')
 
 # Lista de cidades e nomes das pastas
 cidades_destinos = {
