@@ -6,7 +6,7 @@ from zipfile import ZipFile
 from io import BytesIO
 
 def main():
-    st.title("Organizador de Arquivos por Cidade")
+    st.title("batata")
 
     # Componente de upload de arquivos
     uploaded_files = st.file_uploader("Selecione os arquivos que deseja organizar por cidade:", accept_multiple_files=True)
@@ -39,7 +39,7 @@ def main():
 
             if cidade_encontrada:
                 diretorio_destino_cidade = os.path.join("./arquivos_organizados", cidades_destinos[cidade_encontrada])
-                os.makedirs(diretorio_destino_cidade, exist_ok=True)
+                os.makedirs(diretorio_destino_cidade, exist_ok=True)  # Garante que o diretório seja criado se não existir
                 caminho_destino = os.path.join(diretorio_destino_cidade, file_name)
                 shutil.move(file_path, caminho_destino)
 
@@ -53,7 +53,7 @@ def main():
                     cidade_path = os.path.join("./arquivos_organizados", pasta)
                     for root, _, files in os.walk(cidade_path):
                         for file in files:
-                            zip_obj.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), cidade_path))
+                            zip_obj.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), "./arquivos_organizados"))
 
             zipf.seek(0)
             st.markdown(get_download_link(zipf), unsafe_allow_html=True)
