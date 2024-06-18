@@ -29,7 +29,7 @@ def main():
     )
 
     # Título principal
-    st.title("Organizador de Arquivos por Cidade")
+    st.title("Criar Pastas - Prefeituras")
 
     # Componente de upload de arquivos
     uploaded_files = st.file_uploader("Insira os arquivos de prefeituras que deseja organizar em pastas:", accept_multiple_files=True)
