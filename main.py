@@ -49,8 +49,8 @@ def main():
         if st.button("Baixar Arquivos Organizados"):
             zipf = BytesIO()
             with ZipFile(zipf, 'w') as zip_obj:
-                for cidade in cidades_destinos.values():
-                    cidade_path = os.path.join("./arquivos_organizados", cidade)
+                for cidade, pasta in cidades_destinos.items():
+                    cidade_path = os.path.join("./arquivos_organizados", pasta)
                     for root, _, files in os.walk(cidade_path):
                         for file in files:
                             zip_obj.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), cidade_path))
