@@ -94,16 +94,12 @@ def main():
                             zip_obj.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), "./arquivos_organizados"))
 
             zipf.seek(0)
-            st.markdown(get_download_link(zipf), unsafe_allow_html=True)
+            b64 = base64.b64encode(zipf.read()).decode()
+            href = f'<a href="data:application/zip;base64,{b64}" download="arquivos_organizados.zip">Clique aqui para baixar os arquivos organizados</a>'
+            st.markdown(href, unsafe_allow_html=True)
 
         # Removendo diretório temporário após o processamento
         shutil.rmtree(temp_dir, ignore_errors=True)
-
-def get_download_link(file):
-    # Converte o arquivo para base64 e cria um link para download do arquivo zipado
-    b64 = base64.b64encode(file.read()).decode()
-    href = f'<a href="data:application/zip;base64,{b64}" download="arquivos_organizados.zip">Clique aqui para baixar os arquivos organizados</a>'
-    return href
 
 if __name__ == "__main__":
     main()
