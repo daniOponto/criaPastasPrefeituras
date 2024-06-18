@@ -22,7 +22,11 @@ def process_files(uploaded_files):
 
     # Provide download link for zip file
     st.markdown(f"### Download Processed Files")
-    st.markdown(get_binary_file_downloader_html(zip_filename, 'ProcessedFiles.zip', 'Click here to download'))
+    with open(zip_filename, 'rb') as f:
+        bytes_data = f.read()
+    b64 = base64.b64encode(bytes_data).decode()
+    href = f'<a href="data:application/zip;base64,{b64}" download="{zip_filename}">Click here to download</a>'
+    st.markdown(href, unsafe_allow_html=True)
 
     # Cleanup temp directory
     shutil.rmtree(temp_dir)
@@ -47,16 +51,9 @@ def process_documents(temp_dir):
 
 # Function to create a zip file of processed folders
 def create_zip_of_folders():
-    processed_zip = 'ProcessedFiles.zip'
+    processed_zip = './temp_upload/ProcessedFiles.zip'
     shutil.make_archive(processed_zip.replace('.zip', ''), 'zip', './temp_upload')
     return processed_zip
-
-# Function to download files
-def get_binary_file_downloader_html(bin_file, file_label, button_label):
-    with open(bin_file, 'rb') as f:
-        data = f.read()
-    b64 = base64.b64encode(data).decode()
-    return f'<a href="data:application/octet-stream;base64,{b64}" download="{file_label}">{button_label}</a>'
 
 # Streamlit UI
 st.title('Document Upload and Processing')
