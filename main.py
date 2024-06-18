@@ -1,63 +1,69 @@
 import os
 import shutil
 import streamlit as st
-import base64  # Import base64 module for encoding
+from zipfile import ZipFile
+from io import BytesIO
 
-# Function to process uploaded files
-def process_files(uploaded_files):
-    # Temporary directory for storing uploaded files
-    temp_dir = './temp_upload'
-    os.makedirs(temp_dir, exist_ok=True)
+def main():
+    st.title("Organizador de Arquivos por Cidade")
 
-    # Save uploaded files to temp directory
-    for uploaded_file in uploaded_files:
-        with open(os.path.join(temp_dir, uploaded_file.name), 'wb') as f:
-            f.write(uploaded_file.getbuffer())
+    # Componente de upload de arquivos
+    uploaded_files = st.file_uploader("Selecione os arquivos que deseja organizar por cidade:", accept_multiple_files=True)
 
-    # Process uploaded files
-    process_documents(temp_dir)
+    if uploaded_files:
+        # Criando um diretório temporário para armazenar os arquivos
+        temp_dir = "./temp_upload"
+        os.makedirs(temp_dir, exist_ok=True)
 
-    # Create zip file of processed folders
-    zip_filename = create_zip_of_folders()
+        # Salvando os arquivos no diretório temporário
+        file_paths = []
+        for file in uploaded_files:
+            file_path = os.path.join(temp_dir, file.name)
+            with open(file_path, "wb") as f:
+                f.write(file.getbuffer())
+            file_paths.append(file_path)
 
-    # Provide download link for zip file
-    st.markdown(f"### Download Processed Files")
-    with open(zip_filename, 'rb') as f:
-        bytes_data = f.read()
-    b64 = base64.b64encode(bytes_data).decode()
-    href = f'<a href="data:application/zip;base64,{b64}" download="{zip_filename}">Click here to download</a>'
-    st.markdown(href, unsafe_allow_html=True)
+        # Lista de cidades e nomes das pastas
+        cidades_destinos = {
+            'adamantina': 'Prefeitura Adamantina',
+            'alfredo marcondes': 'Prefeitura Alfredo Marcondes',
+            # Lista completa de cidades aqui ...
+            'valparaiso': 'Prefeitura Valparaiso'
+        }
 
-    # Cleanup temp directory
-    shutil.rmtree(temp_dir)
+        # Organizando os arquivos por cidade
+        for file_path in file_paths:
+            file_name = os.path.basename(file_path)
+            cidade_encontrada = next((cidade for cidade in cidades_destinos if cidade in file_name.lower()), None)
 
-# Function to process documents based on city
-def process_documents(temp_dir):
-    cidades_destinos = {  # Your dictionary of cities and folder names
-        'adamantina': 'Prefeitura Adamantina',
-        # Add other cities as needed
-    }
+            if cidade_encontrada:
+                diretorio_destino_cidade = os.path.join("./arquivos_organizados", cidades_destinos[cidade_encontrada])
+                os.makedirs(diretorio_destino_cidade, exist_ok=True)
+                caminho_destino = os.path.join(diretorio_destino_cidade, file_name)
+                shutil.move(file_path, caminho_destino)
 
-    arquivos = os.listdir(temp_dir)
-    for arquivo in arquivos:
-        cidade_encontrada = next((cidade for cidade in cidades_destinos if cidade in arquivo.lower()), None)
-        if cidade_encontrada:
-            diretorio_destino_cidade = os.path.join(temp_dir, cidades_destinos[cidade_encontrada])
-            os.makedirs(diretorio_destino_cidade, exist_ok=True)
-            caminho_origem = os.path.join(temp_dir, arquivo)
-            caminho_destino = os.path.join(diretorio_destino_cidade, arquivo)
-            if caminho_origem != caminho_destino:  # Ensure source and destination are different
-                shutil.move(caminho_origem, caminho_destino)
+        st.success("Arquivos organizados com sucesso.")
 
-# Function to create a zip file of processed folders
-def create_zip_of_folders():
-    processed_zip = './temp_upload/ProcessedFiles.zip'
-    shutil.make_archive(processed_zip.replace('.zip', ''), 'zip', './temp_upload')
-    return processed_zip
+        # Opção para fazer download dos arquivos organizados
+        if st.button("Baixar Arquivos Organizados"):
+            zipf = BytesIO()
+            with ZipFile(zipf, 'w') as zip_obj:
+                for cidade in cidades_destinos.values():
+                    cidade_path = os.path.join("./arquivos_organizados", cidade)
+                    for root, _, files in os.walk(cidade_path):
+                        for file in files:
+                            zip_obj.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), cidade_path))
 
-# Streamlit UI
-st.title('Document Upload and Processing')
+            zipf.seek(0)
+            st.markdown(get_download_link(zipf), unsafe_allow_html=True)
 
-uploaded_files = st.file_uploader('Upload your documents', accept_multiple_files=True)
-if st.button('Process Files') and uploaded_files:
-    process_files(uploaded_files)
+        # Removendo diretório temporário após o processamento
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+def get_download_link(file):
+    # Cria um link para download do arquivo zipado
+    href = f'<a href="data:application/zip;base64,{file.read().encode("base64").decode()}">Clique aqui para baixar os arquivos organizados</a>'
+    return href
+
+if __name__ == "__main__":
+    main()
