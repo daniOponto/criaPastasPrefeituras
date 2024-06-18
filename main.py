@@ -1,6 +1,7 @@
 import os
 import shutil
 import streamlit as st
+import base64  # Import base64 module for encoding
 
 # Function to process uploaded files
 def process_files(uploaded_files):
@@ -30,9 +31,7 @@ def process_files(uploaded_files):
 def process_documents(temp_dir):
     cidades_destinos = {  # Your dictionary of cities and folder names
         'adamantina': 'Prefeitura Adamantina',
-        'alfredo marcondes': 'Prefeitura Alfredo Marcondes',
-        'arco-iris': 'Prefeitura Arco-Iris',
-        'ariranha': 'Prefeitura Ariranha'
+        # Add other cities as needed
     }
 
     arquivos = os.listdir(temp_dir)
