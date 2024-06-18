@@ -6,10 +6,10 @@ from zipfile import ZipFile
 from io import BytesIO
 
 def main():
-    st.title("Organizador de Arquivos por Cidade")
+    st.title("Criar Pastas - Prefeituras")
 
     # Componente de upload de arquivos
-    uploaded_files = st.file_uploader("Selecione os arquivos que deseja organizar por cidade:", accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Insira os arquivos das prefeituras que deseja organizar por pastas:", accept_multiple_files=True)
 
     if uploaded_files:
         # Criando um diretório temporário para armazenar os arquivos
@@ -92,7 +92,7 @@ def main():
 
         zipf.seek(0)
         b64 = base64.b64encode(zipf.read()).decode()
-        href = f'<a href="data:application/zip;base64,{b64}" download="arquivos_organizados.zip">Clique aqui para baixar os arquivos organizados</a>'
+        href = f'<a href="data:application/zip;base64,{b64}" download="arquivos_organizados.zip">Baixar Arquivos Organizados</a>'
         st.markdown(href, unsafe_allow_html=True)
 
         # Removendo diretório temporário após o processamento
