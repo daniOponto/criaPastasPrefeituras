@@ -8,7 +8,7 @@ from io import BytesIO
 def main():
     # Configurando o tema da página
     st.set_page_config(
-        page_title="Organizador de Arquivos por Cidade",
+        page_title="Criar Pastas - Prefeituras",
         layout="centered",
         initial_sidebar_state="auto",
     )
@@ -32,7 +32,7 @@ def main():
     st.title("Organizador de Arquivos por Cidade")
 
     # Componente de upload de arquivos
-    uploaded_files = st.file_uploader("Selecione os arquivos que deseja organizar por cidade:", accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Insira os arquivos de prefeituras que deseja organizar em pastas:", accept_multiple_files=True)
 
     if uploaded_files:
         # Criando um diretório temporário para armazenar os arquivos
