@@ -6,10 +6,10 @@ from zipfile import ZipFile
 from io import BytesIO
 
 def main():
-    st.title("Criar Pastas - Prefeituras")
+    st.title("Organizador de Arquivos por Cidade")
 
     # Componente de upload de arquivos
-    uploaded_files = st.file_uploader("Insira os arquivos das prefeituras que deseja organizar por pastas:", accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Selecione os arquivos que deseja organizar por cidade:", accept_multiple_files=True)
 
     if uploaded_files:
         # Criando um diretório temporário para armazenar os arquivos
@@ -81,22 +81,19 @@ def main():
 
         st.success("Arquivos organizados com sucesso.")
 
-        # Botão para fazer download dos arquivos organizados
-        download_button = st.button("Baixar Arquivos Organizados")
+        # Criando o arquivo zip
+        zipf = BytesIO()
+        with ZipFile(zipf, 'w') as zip_obj:
+            for cidade, pasta in cidades_destinos.items():
+                cidade_path = os.path.join("./arquivos_organizados", pasta)
+                for root, _, files in os.walk(cidade_path):
+                    for file in files:
+                        zip_obj.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), "./arquivos_organizados"))
 
-        if download_button:
-            zipf = BytesIO()
-            with ZipFile(zipf, 'w') as zip_obj:
-                for cidade, pasta in cidades_destinos.items():
-                    cidade_path = os.path.join("./arquivos_organizados", pasta)
-                    for root, _, files in os.walk(cidade_path):
-                        for file in files:
-                            zip_obj.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), "./arquivos_organizados"))
-
-            zipf.seek(0)
-            b64 = base64.b64encode(zipf.read()).decode()
-            href = f'<a href="data:application/zip;base64,{b64}" download="arquivos_organizados.zip">Clique aqui para baixar os arquivos organizados</a>'
-            st.markdown(href, unsafe_allow_html=True)
+        zipf.seek(0)
+        b64 = base64.b64encode(zipf.read()).decode()
+        href = f'<a href="data:application/zip;base64,{b64}" download="arquivos_organizados.zip">Clique aqui para baixar os arquivos organizados</a>'
+        st.markdown(href, unsafe_allow_html=True)
 
         # Removendo diretório temporário após o processamento
         shutil.rmtree(temp_dir, ignore_errors=True)
